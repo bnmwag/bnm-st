@@ -16,3 +16,28 @@
 /* Active during Swup transitions (html.is-animating). */
 @custom-variant animating (&:where(html.is-animating *), &:where(html.is-animating));
 
+/*
+  Type scale. Sizes are viewport-relative with a floor so they stop shrinking on small screens.
+  Each utility sets size, weight, line height, letter spacing and family only. Casing stays at
+  the call site.
+*/
+
+/* Block titles: DES + DEV, ARCHIVE, MANIFESTO. */
+@utility text-display {
+  @apply text-[max(3.5rem,18.151vw)] font-semibold leading-[78%] tracking-[-3%];
+}
+
+/* Card titles and principle labels. */
+@utility text-title {
+  @apply text-[max(0.875rem,1.15vw)] font-semibold leading-[86%] tracking-[-3%];
+}
+
+/* Meta rows: name, services, location, time. */
+@utility text-label {
+  @apply text-[max(0.6875rem,0.75vw)] font-semibold leading-[86%] tracking-[-3%];
+}
+
+/* Mono meta: years, disciplines. */
+@utility text-caption {
+  @apply font-mono text-sm font-medium leading-[87%] tracking-[-0.04em];
+}

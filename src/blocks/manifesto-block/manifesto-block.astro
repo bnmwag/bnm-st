@@ -21,7 +21,7 @@ const principles: IPrinciple[] = [
 <Section class='h-[150svh] -mt-[100svh] py-0! overflow-clip' theme='dark' data-hero-block>
     <Image src={ManifestoImage} alt={"Manifesto image"} data-scroll data-scroll-speed='-0.15' class='absolute inset-0 object-cover h-full w-full' />
 
-    <div class='text-[18.151vw] absolute bottom-0 leading-[78%] tracking-[-3%] text-foreground-muted inset-x-0 font-semibold text-center'>MANIFESTO</div>
+    <div class='text-display absolute bottom-0 text-foreground-muted inset-x-0 font-semibold text-center'>MANIFESTO</div>
 
     <Container class='relative z-20 py-grid-margin'>
         <Grid>
@@ -30,10 +30,10 @@ const principles: IPrinciple[] = [
                     principles.map((p, i) => (
                         <div class='col-span-2 bg-black aspect-3/3.5 p-4 flex flex-col justify-between'>
                             <div class='flex items-start justify-between'>
-                                <p class='text-[0.75vw] font-mono leading-[86%] uppercase opacity-50 tracking-[-3%] font-semibold'>{p.label}</p>
-                                <p class='text-[0.75vw] leading-[86%] tracking-[-3%] font-semibold'>[0{i}]</p>
+                                <p class='text-caption uppercase opacity-50'>{p.label}</p>
+                                <p class='text-label'>[0{i}]</p>
                             </div>
-                            <p class='text-[1.15vw] leading-[86%] tracking-[-3%] font-semibold uppercase'>{p.content}</p>
+                            <p class='text-title uppercase'>{p.content}</p>
                         </div>
                     ))
                 }
