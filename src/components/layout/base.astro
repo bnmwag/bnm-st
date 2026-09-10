@@ -1,6 +1,8 @@
 ---
 import "@/styles/main.css";
 
+import SiteNav from "./site-nav.astro";
+
 import { Font } from "astro:assets";
 
 interface Props {
@@ -36,6 +38,7 @@ const { scrollOrientation = "vertical", title = "Kit", description, ogImage } = 
     {description && <meta name='twitter:description' content={description} />}
   </head>
   <body class='font-sans antialiased'>
+    <SiteNav />
     <main id='swup' data-swup-transition>
       <slot />
     </main>

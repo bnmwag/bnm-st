@@ -1,0 +1,34 @@
+---
+import { Container, Grid } from "@/components/core";
+
+interface ILink {
+    label: string;
+    hover: string;
+    href: string;
+}
+
+const left: ILink = { label: "developer + designer", hover: "about", href: "/about" };
+const right: ILink = { label: "Based in Austria", hover: "contact", href: "/contact" };
+---
+
+<nav data-site-nav class='fixed inset-x-0 top-grid-margin z-50 mix-blend-difference text-white'>
+    <Container>
+        <Grid>
+            <div class='col-span-4 flex flex-col items-start gap-1'>
+                <a href='/' class='text-label uppercase'>Benjamin Wagner</a>
+                <a href={left.href} class='nav-swap text-label uppercase opacity-50'>
+                    <span class='nav-swap-label'>{left.label}</span>
+                    <span class='nav-swap-hover'>{left.hover}</span>
+                </a>
+            </div>
+            <div class='col-span-4'></div>
+            <div class='col-span-4 flex flex-col items-end gap-1 text-right'>
+                <a href={right.href} class='nav-swap text-label uppercase'>
+                    <span class='nav-swap-label'>{right.label}</span>
+                    <span class='nav-swap-hover'>{right.hover}</span>
+                </a>
+                <p data-site-nav-clock class='text-label uppercase opacity-50'>--:--:--</p>
+            </div>
+        </Grid>
+    </Container>
+</nav>
