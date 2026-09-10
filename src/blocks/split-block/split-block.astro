@@ -1,0 +1,20 @@
+---
+import { Image } from "astro:assets";
+import { Container, Grid, Section } from "@/components/core";
+
+import Left from "@/assets/images/left.jpg";
+import Right from "@/assets/images/right.jpg";
+---
+
+<Section theme='light' data-split-block>
+    <Container>
+        <Grid>
+            <div class='col-span-7 aspect-3/4 overflow-clip'>
+                <Image src={Left} alt={"Left image"} class='object-cover h-full w-full' data-scroll data-scroll-speed='-0.1' />
+            </div>
+            <div class='col-span-5 aspect-3/4 overflow-clip'>
+                <Image src={Right} alt={"Right image"} class='object-cover h-full w-full' data-scroll data-scroll-speed='-0.1' />
+            </div>
+        </Grid>
+    </Container>
+</Section>
