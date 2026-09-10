@@ -19,6 +19,7 @@
     "gsap": "^3.15.0",
     "locomotive-scroll": "^5.0.1",
     "nanostores": "^1.5.3",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4.3.3",
     "three": "^0.186.0",
     "ts-debounce": "^5.0.1",
