@@ -1,0 +1,43 @@
+---
+import { Image } from "astro:assets";
+import { Container, Grid, Section } from "@/components/core";
+
+import ManifestoImage from "@/assets/images/manifesto.jpg";
+
+interface IPrinciple {
+    label: string;
+    content: string;
+}
+
+const principles: IPrinciple[] = [
+    { label: "Proximity", content: "I like being in the room, not at the end of the chain." },
+    { label: "Depth", content: "I'D RATHER DO THREE THINGS PROPERLY THAN TEN THINGS ON TIME." },
+    { label: "BROWSER FIRST", content: "I PROTOTYPE IN CODE EARLY. MOCKUPS LIE, BROWSERS DON'T." },
+    { label: "Feel", content: "I CARE HOW IT FEELS TO SCROLL, NOT JUST HOW IT LOOKS IN A SCREENSHOT." },
+    { label: "RESTRAINT", content: "I SAY NO TO FEATURES THAT ONLY EXIST BECAUSE A COMPETITOR HAS THEM." },
+];
+---
+
+<Section class='h-[150svh] -mt-[100svh] py-0! overflow-clip' theme='dark' data-hero-block>
+    <Image src={ManifestoImage} alt={"Manifesto image"} data-scroll data-scroll-speed='-0.15' class='absolute inset-0 object-cover h-full w-full' />
+
+    <div class='text-[18.151vw] absolute bottom-0 leading-[78%] tracking-[-3%] text-foreground-muted inset-x-0 font-semibold text-center'>MANIFESTO</div>
+
+    <Container class='relative z-20 py-grid-margin'>
+        <Grid>
+            <div class='col-span-4 grid grid-cols-4 gap-grid-gutter' data-scroll data-scroll-speed='0.1'>
+                {
+                    principles.map((p, i) => (
+                        <div class='col-span-2 bg-black aspect-3/3.5 p-4 flex flex-col justify-between'>
+                            <div class='flex items-start justify-between'>
+                                <p class='text-[0.75vw] font-mono leading-[86%] uppercase opacity-50 tracking-[-3%] font-semibold'>{p.label}</p>
+                                <p class='text-[0.75vw] leading-[86%] tracking-[-3%] font-semibold'>[0{i}]</p>
+                            </div>
+                            <p class='text-[1.15vw] leading-[86%] tracking-[-3%] font-semibold uppercase'>{p.content}</p>
+                        </div>
+                    ))
+                }
+            </div>
+        </Grid>
+    </Container>
+</Section>
