@@ -1,0 +1,62 @@
+@utility theme-light {
+  --background: #fafafa;
+  --foreground: #343434;
+  --accent: #EA2121;
+
+  @apply bg-background text-foreground;
+}
+
+@utility theme-dark {
+  --background: #0b0b0a;
+  --foreground: #fafafa;
+  --accent: #EA2121;
+
+  @apply bg-background text-foreground;
+}
+
+@utility theme-accent {
+  --background: #EA2121;
+  --foreground: #fafafa;
+  --accent: #0b0b0a;
+
+  @apply bg-background text-foreground;
+}
+
+:root {
+  @apply theme-light;
+
+  /* Width of one grid column inside the page margins. */
+  --column-width: calc((100vw - 2 * var(--spacing-grid-margin) - 11 * var(--spacing-grid-gutter)) / 12);
+}
+
+@theme inline {
+  --font-sans:  var(--font-neue-montreal), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-neue-montreal-mono);
+  --font-serif: var(--font-editorial-old);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent:     var(--accent);
+
+  --grid-columns:          12;
+  --spacing-grid-margin:   1rem;
+  --spacing-grid-gutter:   1rem;
+  --spacing-header-height: 4rem;
+
+  /* Column-span distances: N columns plus the gutters between them.
+     Usable with any spacing utility: gap-y-column-2, mt-column-1, w-column-3, … */
+  --spacing-column-1: var(--column-width);
+  --spacing-column-2: calc(2 * var(--column-width) + var(--spacing-grid-gutter));
+  --spacing-column-3: calc(3 * var(--column-width) + 2 * var(--spacing-grid-gutter));
+  --spacing-column-4: calc(4 * var(--column-width) + 3 * var(--spacing-grid-gutter));
+  --spacing-column-5: calc(5 * var(--column-width) + 4 * var(--spacing-grid-gutter));
+  --spacing-column-6: calc(6 * var(--column-width) + 5 * var(--spacing-grid-gutter));
+}
+
+/* Responsive overrides:
+@media (min-width: 64rem) {
+  :root {
+    --spacing-grid-margin: 2rem;
+    --spacing-grid-gutter: 1.5rem;
+  }
+} */

@@ -1,0 +1,76 @@
+/* Page padding, no grid. */
+@utility layout-block {
+  @apply px-grid-margin;
+}
+
+/* 12-column grid, no page padding. */
+@utility layout-inner-grid {
+  @apply grid grid-cols-12 gap-x-grid-gutter;
+}
+
+/* Page padding + 12-column grid. */
+@utility layout-grid {
+  @apply px-grid-margin grid grid-cols-12 gap-x-grid-gutter;
+}
+
+/* Active during Swup transitions (html.is-animating). */
+@custom-variant animating (&:where(html.is-animating *), &:where(html.is-animating));
+
+/*
+  Type scale — derived from Figma [LIVE] frames (1728px design width).
+  vw values = design px / 1728.
+*/
+
+/* ~295px · oversized display: WHAT WE DO, stat numbers (42 / 2.8K / 94%) */
+@utility text-display {
+  @apply text-[clamp(3.5rem,16.5vw,50rem)] font-semibold tracking-[-2%] leading-[0.8] uppercase;
+}
+
+/* ~234px · big section display: TEAM, ARE YOU READY? */
+@utility text-h1 {
+  @apply text-[clamp(3rem,13.5vw,50rem)] font-semibold tracking-[-2%] leading-[0.8] uppercase;
+}
+
+/* ~145px · large headings: SELECTED WORK */
+@utility text-h2 {
+  @apply text-[clamp(2.5rem,8.4vw,50rem)] font-normal tracking-[-2%] leading-[0.9] uppercase;
+}
+
+/* ~115px · section headings: AUFNAHME & PRODUKTION (home), team member names */
+@utility text-h3 {
+  @apply text-[clamp(2rem,6.25vw,50rem)] font-semibold tracking-[-2%] leading-[0.9];
+}
+
+/* ~80px · statements + page heros: hero title, ABSICHTLICH KLEIN, manifesto lines, client lists */
+@utility text-h4 {
+  @apply text-[clamp(1.75rem,5.25vw,50rem)] font-semibold tracking-[-1%] leading-[0.9];
+}
+
+/* ~45px · marquee ticker, case card titles */
+@utility text-ticker {
+  @apply text-[clamp(1.5rem,2.6vw,50rem)] font-semibold tracking-[-1%] leading-none uppercase;
+}
+
+/* ~28-32px · serif accents: "Dafür sind wir da", "Und das darf gerne so bleiben.", quotes */
+@utility text-lead {
+  @apply text-[clamp(1.25rem,1.8vw,50rem)] font-serif font-normal tracking-[-1%] leading-[1.15];
+}
+
+/* 16px · paragraphs: bios, service descriptions */
+@utility text-body {
+  @apply text-[clamp(0.9375rem,0.95vw,50rem)] font-normal tracking-[-1%] leading-[1.5];
+}
+
+/* 14px · footer links, meta */
+@utility text-body-sm {
+  @apply text-[clamp(0.8125rem,0.8vw,50rem)] font-normal tracking-[-1%] leading-[1.2];
+}
+
+/* 12px · mono labels: PRODUCED BY PUKA.STUDIO, chips, spec details */
+@utility text-caption {
+  @apply text-sm font-mono tracking-[-.04em] leading-[87%] uppercase;
+}
+
+@utility text-button {
+  @apply text-3xl font-semibold tracking-[-.04em] leading-[87%] uppercase;
+}

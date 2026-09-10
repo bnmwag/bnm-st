@@ -12,7 +12,16 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.3.2"
+    "@astrojs/check": "^0.9.10",
+    "@locomotivemtl/grid-helper": "^1.1.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.3.2",
+    "gsap": "^3.15.0",
+    "locomotive-scroll": "^5.0.1",
+    "nanostores": "^1.5.3",
+    "tailwindcss": "^4.3.3",
+    "ts-debounce": "^5.0.1",
+    "typescript": "^7.0.2"
   },
   "allowScripts": {
     "esbuild": true
