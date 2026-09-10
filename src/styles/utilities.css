@@ -27,6 +27,11 @@
   @apply text-[max(3.5rem,18.151vw)] font-semibold leading-[78%] tracking-[-3%];
 }
 
+/* Section headlines that need weight without going to display size. */
+@utility text-headline {
+  @apply text-[max(2rem,5.5vw)] font-semibold leading-[86%] tracking-[-3%];
+}
+
 /* Card titles and principle labels. */
 @utility text-title {
   @apply text-[max(0.875rem,1.15vw)] font-semibold leading-[86%] tracking-[-3%];

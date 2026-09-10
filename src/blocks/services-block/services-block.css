@@ -1,0 +1,20 @@
+@layer components {
+  .service-row {
+    color: color-mix(in srgb, var(--foreground) 30%, transparent);
+    transition: color 0.3s ease;
+  }
+
+  .service-row:hover,
+  .service-row[aria-pressed="true"] {
+    color: var(--foreground);
+  }
+
+  .service-mark {
+    display: inline-block;
+    transition: transform 0.3s ease;
+  }
+
+  .service-row[aria-pressed="true"] .service-mark {
+    transform: rotate(45deg);
+  }
+}
