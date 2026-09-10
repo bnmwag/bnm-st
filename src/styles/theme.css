@@ -1,6 +1,7 @@
 @utility theme-light {
-  --background: #fafafa;
-  --foreground: #343434;
+  --background: #EEEEEE;
+  --foreground: #0b0b0a;
+  --foreground-muted: #00000026;
   --accent: #EA2121;
 
   @apply bg-background text-foreground;
@@ -8,7 +9,8 @@
 
 @utility theme-dark {
   --background: #0b0b0a;
-  --foreground: #fafafa;
+  --foreground: #EEEEEE;
+  --foreground-muted: #FFFFFF26;
   --accent: #EA2121;
 
   @apply bg-background text-foreground;
@@ -36,6 +38,7 @@
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
   --color-accent:     var(--accent);
 
   --grid-columns:          12;
