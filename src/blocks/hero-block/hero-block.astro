@@ -1,0 +1,50 @@
+---
+import { Image } from "astro:assets";
+import { Container, Grid, Section } from "@/components/core";
+
+import HomeHero from "@/assets/images/home-hero.jpg";
+import { ProgressiveBlur } from "@/components/misc";
+---
+
+<Section class='h-[200svh] py-0! overflow-clip' theme='dark' data-hero-block>
+    <Image src={HomeHero} alt={"Home hero"} data-scroll data-scroll-speed='-0.15' class='absolute inset-0 object-cover' />
+    <div class='text-[18.151vw] leading-[78%] tracking-[-3%] text-foreground-muted absolute inset-x-0 top-0 font-semibold text-center'>DES + DEV</div>
+    <ProgressiveBlur direction='top' class='absolute inset-x-0 top-0 z-10 h-[40svh] w-full' />
+
+    <Container class='relative z-20 top-[calc((18.151vw/100*78)/2)] -translate-y-1/2'>
+        <Grid class='h-full'>
+            <div class='col-span-4 self-center flex flex-col justify-center items-start gap-1'>
+                <p class='text-[0.75vw] leading-[86%] tracking-[-3%] font-semibold uppercase'>Benjamin Wagner</p>
+                <p class='text-[0.75vw] leading-[86%] tracking-[-3%] font-semibold uppercase opacity-50'>developer + designer</p>
+            </div>
+            <div class='col-span-4 self-center flex flex-col justify-center items-center gap-1 text-center'>
+                <p class='text-[0.75vw] leading-[86%] tracking-[-3%] font-semibold uppercase'>
+                    The gap between designer and developer <br /> is where sites die. I closed it.
+                </p>
+            </div>
+            <div class='col-span-4 self-center flex flex-col justify-center items-end gap-1 text-right'>
+                <p class='text-[0.75vw] leading-[86%] tracking-[-3%] font-semibold uppercase'>Based in austria</p>
+                <p class='text-[0.75vw] leading-[86%] tracking-[-3%] font-semibold uppercase opacity-50'>[current-time]</p>
+            </div>
+        </Grid>
+    </Container>
+    <Container class='absolute z-20 bottom-grid-margin inset-x-0'>
+        <Grid class='h-full'>
+            <div class='col-span-4 grid grid-cols-4 gap-grid-gutter'>
+                <p class='col-span-2 text-[0.75vw] leading-[86%] tracking-[-3%] font-semibold uppercase'>Services</p>
+                <ul class='col-span-2 text-[0.75vw] leading-[86%] tracking-[-3%] font-semibold uppercase space-y-2'>
+                    <li>Design</li>
+                    <li>Development</li>
+                    <li>Sanity CMS</li>
+                    <li>SEO / GEO</li>
+                    <li>Maintenance</li>
+                </ul>
+            </div>
+            <div class='col-span-4'></div>
+            <div class='col-span-4 grid grid-cols-4 gap-grid-gutter'>
+                <p class='col-span-2 text-[0.75vw] leading-[86%] tracking-[-3%] font-semibold uppercase'>Based in Austria</p>
+                <p class='col-span-2 text-[0.75vw] leading-[86%] tracking-[-3%] font-semibold uppercase'>Upper Austria, <br />working everywhere</p>
+            </div>
+        </Grid>
+    </Container>
+</Section>
