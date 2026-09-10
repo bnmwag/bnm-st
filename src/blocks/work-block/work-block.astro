@@ -1,0 +1,53 @@
+---
+import { Image } from "astro:assets";
+import { Section } from "@/components/core";
+
+import HomeHero from "@/assets/images/home-hero.jpg";
+
+interface IProject {
+    title: string;
+    year: string;
+    discipline: string;
+    /** Section-relative start offset in svh. */
+    top: number;
+    /** Tailwind column placement for the card. */
+    placement: string;
+    aspect: string;
+    /** Locomotive parallax speed. Higher = flies past faster. */
+    speed: number;
+}
+
+const projects: IProject[] = [
+    { title: "Hard-Chor", year: "2025", discipline: "Design + Build", top: 110, placement: "ml-column-1 w-column-6", aspect: "aspect-[3/2]", speed: 0.45 },
+    { title: "Alter Ego Festival", year: "2025", discipline: "Design + Build", top: 180, placement: "ml-auto mr-column-1 w-column-6", aspect: "aspect-[16/9]", speed: 0.3 },
+    { title: "Claudia Reiterer", year: "2026", discipline: "Design + Build", top: 250, placement: "ml-column-3 w-column-6", aspect: "aspect-[3/2]", speed: 1 },
+];
+---
+
+<Section theme='light' class='h-[460svh] -mt-[100svh] py-0! z-0! overflow-clip' data-work-block>
+    <div class='sticky top-0 h-svh flex items-center justify-center'>
+        <div data-work-title class='relative w-full'>
+            <h2 class='text-foreground-muted text-center text-[18.151vw] leading-[78%] tracking-[-3%] font-semibold uppercase'>
+                Selected <br /> Work
+            </h2>
+            <span class='text-[0.75vw] leading-[86%] tracking-[-3%] font-semibold uppercase absolute inset-0 grid place-items-center'>2021 — 2026</span>
+        </div>
+    </div>
+
+    <div class='absolute inset-y-0 inset-x-grid-margin z-10'>
+        {
+            projects.map((project) => (
+                <article class:list={["absolute inset-x-0", project.placement]} style={`top: ${project.top}svh`} data-scroll data-scroll-speed={project.speed}>
+                    <div class:list={["relative w-full overflow-clip", project.aspect]}>
+                        <Image src={HomeHero} alt={project.title} class='absolute inset-0 h-full w-full object-cover' />
+                        <div class='absolute inset-x-0 bottom-[6%] flex flex-col items-center gap-1 text-center text-white'>
+                            <p class='text-caption opacity-80'>{project.year}</p>
+                            <p class='text-[1.15vw] leading-[86%] tracking-[-3%] font-semibold uppercase'>{project.title}</p>
+                            <p class='text-caption tracking-[0.08em] opacity-80'>{project.discipline}</p>
+                        </div>
+                    </div>
+                </article>
+            ))
+        }
+    </div>
+</Section>
