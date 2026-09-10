@@ -37,7 +37,10 @@ import HomeHero from "@/assets/images/home-hero.jpg";
             <div class='col-span-4'></div>
             <div class='col-span-4 grid grid-cols-4 gap-grid-gutter'>
                 <p class='col-span-2 text-label uppercase'>Based in Austria</p>
-                <p class='col-span-2 text-label uppercase'>Upper Austria, <br />working everywhere</p>
+                <div class='col-span-2 flex flex-col gap-1'>
+                    <p class='text-label uppercase'>Upper Austria, <br />working everywhere</p>
+                    <p data-local-time class='text-label uppercase opacity-50'>--:--:--</p>
+                </div>
             </div>
         </Grid>
     </Container>
