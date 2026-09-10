@@ -1,0 +1,13 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+    direction?: "top" | "bottom";
+}
+
+const { class: className, direction = "bottom", ...props } = Astro.props;
+---
+
+<div class:list={["progressive-blur", `${direction}-blur`, className]} aria-hidden='true' {...props}>
+    {Array.from({ length: 8 }, (_, index) => <div class:list={["layer", `blur-${index + 1}`]} />)}
+</div>
