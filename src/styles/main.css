@@ -6,7 +6,6 @@
 @import "locomotive-scroll/dist/locomotive-scroll.css";
 
 @import "./theme.css";
-@import "./progressive-blur.css";
 @import "./utilities.css";
 
 html {
