@@ -16,26 +16,23 @@ type Flap = {
     frequency: number;
 };
 
-/** Two clicks, one for the blade opening and one for it closing. */
-const ENTER: Flap[] = [
-    { delay: 0, gain: 0.16, decay: 0.035, frequency: 2600 },
-    { delay: 0.055, gain: 0.1, decay: 0.05, frequency: 1700 },
+/** Hover: a short tick, quiet enough to sit under the page. */
+const HOVER: Flap[] = [
+    { delay: 0, gain: 0.2, decay: 0.04, frequency: 2600 },
+    { delay: 0.02, gain: 0.12, decay: 0.19, frequency: 1500 },
 ];
 
-/** The same pair run backwards and softer, so leaving answers entering. */
-const LEAVE: Flap[] = [
-    { delay: 0, gain: 0.09, decay: 0.045, frequency: 1700 },
-    { delay: 0.045, gain: 0.12, decay: 0.03, frequency: 2600 },
+/** Press: the same shutter, fuller and a touch longer. */
+const PRESS: Flap[] = [
+    { delay: 0, gain: 0.32, decay: 0.06, frequency: 1900 },
+    { delay: 0.06, gain: 0.2, decay: 0.28, frequency: 950 },
 ];
 
-/** Grace after leaving, so moving straight to the next link reads as one move. */
-const GRACE = 110;
-
-/** Shortest gap between two sounds, so they never pile up. */
-const MIN_GAP = 140;
+/** Shortest gap between two sounds, so crossing a row of links stays clean. */
+const MIN_GAP = 90;
 
 export const createShutter = (context: AudioContext) => {
-    const length = Math.floor(context.sampleRate * 0.2);
+    const length = Math.floor(context.sampleRate * 0.3);
     const noise = context.createBuffer(1, length, context.sampleRate);
     const channel = noise.getChannelData(0);
 
@@ -77,9 +74,7 @@ defineService({
         let play: ((flaps: Flap[]) => void) | undefined;
 
         let current: Element | null = null;
-        let sounded = false;
-        let lastSoundAt = 0;
-        let leaveTimer: number | undefined;
+        let lastAt = 0;
 
         /* Browsers only allow audio once the visitor has interacted with the page. */
         const prepare = () => {
@@ -91,25 +86,20 @@ defineService({
 
         const sound = (flaps: Flap[]) => {
             const now = performance.now();
-            if (now - lastSoundAt < MIN_GAP) return false;
+            if (now - lastAt < MIN_GAP) return;
 
-            lastSoundAt = now;
+            lastAt = now;
 
             if (context?.state === "suspended") void context.resume();
             play?.(flaps);
-
-            return true;
         };
 
         const onOver = (event: PointerEvent) => {
             const target = resolve(event.target);
             if (!target || target === current) return;
 
-            /* Landing on the next link cancels the last one's exit: one move, one sound. */
-            window.clearTimeout(leaveTimer);
-
             current = target;
-            sounded = sound(ENTER);
+            sound(HOVER);
         };
 
         const onOut = (event: PointerEvent) => {
@@ -121,22 +111,20 @@ defineService({
             if (next && target.contains(next)) return;
 
             current = null;
-
-            /* Only answer an entrance that was actually heard, and only for inline links. */
-            if (!sounded || target.classList.contains("button-swap")) return;
-
-            sounded = false;
-            leaveTimer = window.setTimeout(() => sound(LEAVE), GRACE);
         };
 
-        window.addEventListener("pointerdown", prepare, { once: true });
+        const onDown = (event: PointerEvent) => {
+            prepare();
+            if (resolve(event.target)) sound(PRESS);
+        };
+
+        window.addEventListener("pointerdown", onDown);
         window.addEventListener("keydown", prepare, { once: true });
         window.addEventListener("pointerover", onOver);
         window.addEventListener("pointerout", onOut);
 
         return () => {
-            window.clearTimeout(leaveTimer);
-            window.removeEventListener("pointerdown", prepare);
+            window.removeEventListener("pointerdown", onDown);
             window.removeEventListener("keydown", prepare);
             window.removeEventListener("pointerover", onOver);
             window.removeEventListener("pointerout", onOut);
