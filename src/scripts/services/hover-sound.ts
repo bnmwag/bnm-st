@@ -9,58 +9,96 @@ const resolve = (node: EventTarget | null) => {
     return el?.closest(".button-swap") ?? el?.closest(SELECTOR) ?? null;
 };
 
-type Flap = {
-    delay: number;
+type Whoosh = {
     gain: number;
-    decay: number;
-    frequency: number;
+    /** Seconds the noise swells before it peaks, then how long the tail takes to die. */
+    swell: number;
+    release: number;
+    /** Bandpass centre at the start and at the end, in Hz. Falling reads as paper. */
+    from: number;
+    to: number;
 };
 
-/** Hover: a short tick, quiet enough to sit under the page. */
-const HOVER: Flap[] = [
-    { delay: 0, gain: 0.2, decay: 0.04, frequency: 2600 },
-    { delay: 0.02, gain: 0.12, decay: 0.19, frequency: 1500 },
+/** Hover: a handful of paper flicks. One is picked per hover, never the same twice in a row. */
+const HOVER: Whoosh[] = [
+    { gain: 0.07, swell: 0.12, release: 0.07, from: 3000, to: 1100 },
+    { gain: 0.06, swell: 0.08, release: 0.05, from: 3600, to: 1600 },
+    { gain: 0.075, swell: 0.16, release: 0.1, from: 2400, to: 800 },
+    { gain: 0.065, swell: 0.1, release: 0.08, from: 1400, to: 2800 },
 ];
 
-/** Press: the same shutter, fuller and a touch longer. */
-const PRESS: Flap[] = [
-    { delay: 0, gain: 0.32, decay: 0.06, frequency: 1900 },
-    { delay: 0.06, gain: 0.2, decay: 0.28, frequency: 950 },
+/** Press: the same flick, a little longer and darker. */
+const PRESS: Whoosh[] = [
+    { gain: 0.1, swell: 0.15, release: 0.09, from: 2400, to: 750 },
+    { gain: 0.09, swell: 0.12, release: 0.12, from: 1800, to: 600 },
 ];
+
+/** How far each play drifts from its preset on top of the pick. */
+const VARY = 0.25;
+
+const drift = (value: number) => value * (1 + (Math.random() * 2 - 1) * VARY);
+
+let lastPick = -1;
+
+/** Picks a preset at random, skipping the one that just played. */
+const pick = (presets: Whoosh[]): Whoosh => {
+    let index = Math.floor(Math.random() * presets.length);
+    if (presets.length > 1 && index === lastPick) index = (index + 1) % presets.length;
+    lastPick = index;
+    return presets[index];
+};
 
 /** Shortest gap between two sounds, so crossing a row of links stays clean. */
 const MIN_GAP = 90;
 
 export const createShutter = (context: AudioContext) => {
-    const length = Math.floor(context.sampleRate * 0.3);
+    const length = Math.floor(context.sampleRate * 0.4);
     const noise = context.createBuffer(1, length, context.sampleRate);
     const channel = noise.getChannelData(0);
 
     for (let i = 0; i < length; i++) channel[i] = Math.random() * 2 - 1;
 
-    return (flaps: Flap[]) => {
-        const now = context.currentTime;
+    return (presets: Whoosh[]) => {
+        const preset = pick(presets);
+        const whoosh: Whoosh = {
+            gain: drift(preset.gain),
+            swell: drift(preset.swell),
+            release: drift(preset.release),
+            from: drift(preset.from),
+            to: drift(preset.to),
+        };
+        const start = context.currentTime;
+        const peak = start + whoosh.swell;
+        const end = peak + whoosh.release;
 
-        for (const flap of flaps) {
-            const source = context.createBufferSource();
-            source.buffer = noise;
+        const source = context.createBufferSource();
+        source.buffer = noise;
 
-            const band = context.createBiquadFilter();
-            band.type = "bandpass";
-            band.frequency.value = flap.frequency;
-            band.Q.value = 1.4;
+        // The highpass keeps the thump out; the sweeping bandpass is the "paper" part.
+        const floor = context.createBiquadFilter();
+        floor.type = "highpass";
+        floor.frequency.value = 500;
 
-            const gain = context.createGain();
-            const start = now + flap.delay;
+        // A gentle lowpass rounds off the hiss.
+        const ceiling = context.createBiquadFilter();
+        ceiling.type = "lowpass";
+        ceiling.frequency.value = 5000;
 
-            gain.gain.setValueAtTime(0, start);
-            gain.gain.linearRampToValueAtTime(flap.gain, start + 0.002);
-            gain.gain.exponentialRampToValueAtTime(0.0001, start + flap.decay);
+        const band = context.createBiquadFilter();
+        band.type = "bandpass";
+        band.Q.value = 0.7;
+        band.frequency.setValueAtTime(whoosh.from, start);
+        band.frequency.exponentialRampToValueAtTime(whoosh.to, end);
 
-            source.connect(band).connect(gain).connect(context.destination);
-            source.start(start);
-            source.stop(start + flap.decay + 0.02);
-        }
+        const gain = context.createGain();
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(whoosh.gain * 0.25, start + whoosh.swell * 0.6);
+        gain.gain.linearRampToValueAtTime(whoosh.gain, peak);
+        gain.gain.exponentialRampToValueAtTime(0.0001, end);
+
+        source.connect(floor).connect(ceiling).connect(band).connect(gain).connect(context.destination);
+        source.start(start);
+        source.stop(end + 0.02);
     };
 };
 
@@ -71,7 +109,7 @@ defineService({
         if ($mediaStatus.get().isTouchScreen) return;
 
         let context: AudioContext | undefined;
-        let play: ((flaps: Flap[]) => void) | undefined;
+        let play: ((presets: Whoosh[]) => void) | undefined;
 
         let current: Element | null = null;
         let lastAt = 0;
@@ -84,14 +122,14 @@ defineService({
             play = createShutter(context);
         };
 
-        const sound = (flaps: Flap[]) => {
+        const sound = (presets: Whoosh[]) => {
             const now = performance.now();
             if (now - lastAt < MIN_GAP) return;
 
             lastAt = now;
 
             if (context?.state === "suspended") void context.resume();
-            play?.(flaps);
+            play?.(presets);
         };
 
         const onOver = (event: PointerEvent) => {
