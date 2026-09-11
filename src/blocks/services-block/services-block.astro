@@ -1,0 +1,66 @@
+---
+import { Container, Grid, Section } from "@/components/core";
+
+interface IService {
+    title: string;
+    summary: string;
+    includes: string[];
+}
+
+const services: IService[] = [
+    {
+        title: "Design",
+        summary: "You see real screens early, not slides. Layout, type and motion are settled before anything gets built.",
+        includes: ["Layout and visual design", "Fonts and colours", "Design system", "Animation", "Clickable preview", "Social and email templates"],
+    },
+    {
+        title: "Development",
+        summary: "The site is built to load fast, work on every phone and laptop, and stay stable long after launch.",
+        includes: ["Website build", "Online shop", "Forms and integrations", "Speed and Core Web Vitals", "Accessibility", "Analytics setup"],
+    },
+    {
+        title: "Sanity CMS",
+        summary: "Your team changes text and images in a simple editor, without waiting on a developer.",
+        includes: ["Editor setup", "Fields for your content", "Preview before publishing", "Multiple languages", "Moving your old content", "Training your team"],
+    },
+    {
+        title: "SEO / GEO",
+        summary: "People find you on Google, and AI assistants describe your business correctly when someone asks.",
+        includes: ["SEO audit", "Google setup", "Search data", "AI visibility", "Local listings", "Monthly reporting"],
+    },
+    {
+        title: "Maintenance",
+        summary: "Updates, monitoring and small changes handled every month, so nothing quietly breaks.",
+        includes: ["Security updates", "Uptime monitoring", "Small changes", "Backups", "Yearly health check"],
+    },
+];
+---
+
+<Section theme='light' data-services-block>
+    <Container>
+        <Grid data-smooth-sticky-bounds>
+            <h2 class='col-span-4 text-title uppercase'>
+                <span data-smooth-sticky data-smooth-sticky-top='50svh' class='block will-change-transform'>Services</span>
+            </h2>
+
+            <ul class='col-span-7 col-start-6'>
+                {
+                    services.map((service, index) => (
+                        <li class='grid grid-cols-8 gap-x-grid-gutter border-t border-foreground/15 pt-4 pb-16'>
+                            <p class='col-span-2 text-label uppercase'>
+                                {`${service.title}`}
+                                {/* (0${index + 1})  */}
+                            </p>
+                            <div class='col-span-3 col-start-3 space-y-1'>
+                                {service.includes.map((item) => (
+                                    <p class='text-label uppercase'>{item}</p>
+                                ))}
+                            </div>
+                            <p class='col-span-3 col-start-6 text-label leading-none text-foreground opacity-50 text-balance'>{service.summary}</p>
+                        </li>
+                    ))
+                }
+            </ul>
+        </Grid>
+    </Container>
+</Section>
