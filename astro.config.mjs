@@ -7,7 +7,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
-	site: "https://bnm.st",
+	site: "https://v2.bnm.st",
 	integrations: [
 		sitemap({
 			// The button playground is a dev page.
@@ -19,7 +19,10 @@ export default defineConfig({
 		imageService: true,
 		imagesConfig: {
 			// Every width a component asks for has to be listed here, or Vercel drops it from the srcset.
-			sizes: [320, 480, 640, 800, 960, 1080, 1200, 1400, 1600, 1680, 1966, 2200, 2800, 3456],
+			sizes: [
+				320, 480, 640, 800, 960, 1080, 1200, 1400, 1600, 1680, 1966, 2200, 2800,
+				3456,
+			],
 			domains: [],
 		},
 	}),
