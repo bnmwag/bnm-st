@@ -10,6 +10,7 @@ import {
     WebGLRenderer,
 } from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 import modelUrl from "@/assets/models/chrome_sigil_halo.glb?url";
@@ -50,7 +51,10 @@ export const createSigilScene = (
 
     let loaded = false;
 
-    new GLTFLoader().load(
+    // The model ships meshopt-compressed (about a sixth of the raw size).
+    const loader = new GLTFLoader();
+    loader.setMeshoptDecoder(MeshoptDecoder);
+    loader.load(
         modelUrl,
         (gltf) => {
             const box = new Box3().setFromObject(gltf.scene);
