@@ -2,6 +2,7 @@
 import "@/styles/main.css";
 
 import SiteNav from "./site-nav.astro";
+import SiteFooter from "./site-footer.astro";
 
 import { Font } from "astro:assets";
 
@@ -42,6 +43,7 @@ const { scrollOrientation = "vertical", title = "Kit", description, ogImage } = 
     <main id='swup' data-swup-transition>
       <slot />
     </main>
+    <SiteFooter />
 
     <script>
       import "@/scripts/app";

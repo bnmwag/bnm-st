@@ -1,0 +1,99 @@
+---
+import { Image } from "astro:assets";
+import { Container, Grid } from "@/components/core";
+
+import FooterImage from "@/assets/images/home-hero.jpg";
+
+interface ILink {
+    label: string;
+    href: string;
+}
+
+interface IColumn {
+    title: string;
+    start: string;
+    links: ILink[];
+}
+
+const columns: IColumn[] = [
+    {
+        title: "Site",
+        start: "col-start-6",
+        links: [
+            { label: "Work", href: "/#work" },
+            { label: "Services", href: "/#services" },
+            { label: "Rates", href: "/#rates" },
+            { label: "About", href: "/about" },
+        ],
+    },
+    {
+        title: "Work with me",
+        start: "col-start-8",
+        links: [
+            { label: "Start a project", href: "/contact?tier=project" },
+            { label: "Book a month", href: "/contact?tier=retainer" },
+            { label: "office@bnm.st", href: "mailto:office@bnm.st" },
+        ],
+    },
+    {
+        title: "Resources",
+        start: "col-start-10",
+        links: [
+            { label: "Impressum", href: "/impressum" },
+            { label: "Datenschutz", href: "/datenschutz" },
+        ],
+    },
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer class='theme-light relative z-1 overflow-clip pt-[16vh]' data-site-footer>
+    <!-- The image reaches over the word, so the band is at least as tall as the image plus its bottom inset. -->
+    <div class='relative flex min-h-[calc(var(--spacing-column-4)*4/3+var(--spacing-grid-margin))] items-end'>
+        <Container class='absolute inset-x-0 top-0'>
+            <Grid>
+                {
+                    columns.map((column) => (
+                        <nav class:list={["col-span-2 flex flex-col items-start gap-2", column.start]}>
+                            <p class='text-label mb-2 uppercase opacity-50'>{column.title}</p>
+                            {column.links.map((link) => (
+                                <a href={link.href} class='text-swap text-title uppercase' data-text={link.label}>
+                                    <span class='text-swap__text'>{link.label}</span>
+                                </a>
+                            ))}
+                        </nav>
+                    ))
+                }
+            </Grid>
+        </Container>
+
+        <Container class='w-full'>
+            <div class='relative'>
+                <h2 class='text-display text-foreground-muted text-center uppercase'>Say hello</h2>
+                <p class='text-label absolute inset-x-0 top-1/2 -translate-y-1/2 text-center uppercase'>
+                    © {year} Benjamin Wagner® <br /> Built in Upper Austria
+                </p>
+            </div>
+        </Container>
+
+        <div
+            class='absolute bottom-grid-margin left-grid-margin z-10 aspect-3/4 w-column-4 overflow-clip'
+            data-depth-image
+            data-depth-invert
+        >
+            <div data-scroll data-scroll-speed='-0.1' class='absolute inset-x-0 -top-[15%] h-[130%]'>
+                <Image
+                    src={FooterImage}
+                    alt=''
+                    data-depth-image-layer
+                    class='h-full w-full object-cover transition-opacity duration-500'
+                />
+            </div>
+            <div class='absolute inset-0 flex flex-col justify-between p-4 text-white mix-blend-difference'>
+                <p class='text-label uppercase'>[ at ]</p>
+                <p data-local-time class='text-caption self-end'>--:--:--</p>
+            </div>
+        </div>
+    </div>
+</footer>
