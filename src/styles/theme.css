@@ -9,6 +9,7 @@
 
 @utility theme-dark {
   --background: #0b0b0a;
+  --background-muted: #242424;
   --foreground: #EEEEEE;
   --foreground-muted: #FFFFFF26;
   --accent: #EA2121;
@@ -37,6 +38,7 @@
   --font-serif: var(--font-editorial-old);
 
   --color-background: var(--background);
+  --color-background-muted: var(--background-muted);
   --color-foreground: var(--foreground);
   --color-foreground-muted: var(--foreground-muted);
   --color-accent:     var(--accent);
