@@ -43,16 +43,15 @@ const layers = Array.from({ length: steps }, (_, i) => {
 
 <Tag class={`[-webkit-text-fill-color:transparent] ${className ?? ""}`} {...props}>
     {text}
-    {/* Copies overscan the box by 0.5em so the blur can spill past the glyphs instead of being cut by the mask. */}
+    {/* Copies draw their text from CSS so the heading holds the words once. They overscan the box by 0.5em so the blur can spill past the glyphs instead of being cut by the mask. */}
     {
         layers.map(({ mask, filter }) => (
             <span
                 aria-hidden='true'
-                class='pointer-events-none absolute -inset-[0.5em] p-[0.5em] [-webkit-text-fill-color:currentColor]'
+                data-text={text}
+                class='pointer-events-none absolute -inset-[0.5em] p-[0.5em] [-webkit-text-fill-color:currentColor] before:content-[attr(data-text)]'
                 style={`mask-image: ${mask}; filter: ${filter};`}
-            >
-                {text}
-            </span>
+            />
         ))
     }
 </Tag>

@@ -1,15 +1,27 @@
 // @ts-check
 import { defineConfig, fontProviders } from "astro/config";
 
+import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
 	site: "https://bnm.st",
+	integrations: [
+		sitemap({
+			// The button playground is a dev page.
+			filter: (page) => !page.includes("/buttons"),
+		}),
+	],
 	adapter: vercel({
 		// Optimise images on demand instead of shipping every size from the build.
 		imageService: true,
+		imagesConfig: {
+			// Every width a component asks for has to be listed here, or Vercel drops it from the srcset.
+			sizes: [320, 480, 640, 800, 960, 1080, 1200, 1400, 1600, 1680, 1966, 2200, 2800, 3456],
+			domains: [],
+		},
 	}),
 	vite: {
 		plugins: [tailwindcss()],
@@ -17,11 +29,6 @@ export default defineConfig({
 	fonts: [
 		{
 			provider: fontProviders.local(),
-		imagesConfig: {
-			// Every width a component asks for has to be listed here, or Vercel drops it from the srcset.
-			sizes: [320, 480, 640, 800, 960, 1080, 1200, 1400, 1600, 1680, 1966, 2200, 2800, 3456],
-			domains: [],
-		},
 			name: "Neue Montreal",
 			cssVariable: "--font-neue-montreal",
 			options: {

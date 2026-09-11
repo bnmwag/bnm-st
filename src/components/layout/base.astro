@@ -11,36 +11,77 @@ interface Props {
   description?: string;
   scrollOrientation?: string;
   ogImage?: string;
+  /** Keep a page out of search results. */
+  noindex?: boolean;
 }
 
-const { scrollOrientation = "vertical", title = "Kit", description, ogImage } = Astro.props;
+const SITE_NAME = "Benjamin Wagner";
+const DEFAULT_DESCRIPTION =
+  "Benjamin Wagner designs and builds websites from Upper Austria. Design, development, Sanity CMS, SEO and maintenance, handled by one person.";
+
+const {
+  scrollOrientation = "vertical",
+  title,
+  description = DEFAULT_DESCRIPTION,
+  ogImage = "/og.jpg",
+  noindex = false,
+} = Astro.props;
+
+const pageTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} | Developer + Designer`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImageUrl = new URL(ogImage, Astro.site);
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: SITE_NAME,
+  jobTitle: "Developer + Designer",
+  url: Astro.site?.href,
+  email: "office@bnm.st",
+  address: { "@type": "PostalAddress", addressRegion: "Upper Austria", addressCountry: "AT" },
+  knowsAbout: ["Web design", "Web development", "Sanity CMS", "SEO"],
+};
 ---
 
 <!doctype html>
 <html lang='en' data-scroll-orientation-settings={scrollOrientation}>
   <head>
     <meta charset='utf-8' />
-    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <meta name='viewport' content='width=device-width, initial-scale=1' />
     <meta name='generator' content={Astro.generator} />
+    <link rel='icon' href='/favicon.ico' sizes='32x32' />
+    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+    <link rel='apple-touch-icon' href='/apple-touch-icon.png' />
+    <meta name='theme-color' content='#0b0b0b' />
     <Font cssVariable='--font-neue-montreal' preload />
     <Font cssVariable='--font-neue-montreal-mono' preload />
-    <title>{title}</title>
-    {description && <meta name='description' content={description} />}
+    <title>{pageTitle}</title>
+    <meta name='description' content={description} />
+    <meta name='author' content={SITE_NAME} />
+    <link rel='canonical' href={canonical} />
+    {noindex && <meta name='robots' content='noindex, nofollow' />}
 
     <meta property='og:type' content='website' />
-    <meta property='og:title' content={title} />
-    {description && <meta property='og:description' content={description} />}
+    <meta property='og:site_name' content={SITE_NAME} />
+    <meta property='og:title' content={pageTitle} />
+    <meta property='og:description' content={description} />
+    <meta property='og:url' content={canonical} />
+    <meta property='og:image' content={ogImageUrl} />
     <meta property='og:image:width' content='1200' />
     <meta property='og:image:height' content='630' />
+    <meta property='og:locale' content='en_US' />
 
     <meta name='twitter:card' content='summary_large_image' />
-    <meta name='twitter:title' content={title} />
-    {description && <meta name='twitter:description' content={description} />}
+    <meta name='twitter:title' content={pageTitle} />
+    <meta name='twitter:description' content={description} />
+    <meta name='twitter:image' content={ogImageUrl} />
+
+    <script type='application/ld+json' set:html={JSON.stringify(schema)} />
   </head>
   <body class='font-sans antialiased'>
+    <a href='#main' class='skip-link'>Skip to content</a>
     <SiteNav />
-    <main id='swup' data-swup-transition>
+    <main id='main' data-swup-transition>
       <slot />
     </main>
     <SiteFooter />
