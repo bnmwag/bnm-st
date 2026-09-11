@@ -16,10 +16,13 @@ import { $mediaStatus } from "@/stores/device-status";
 import { $smoothMouse } from "@/stores/mouse";
 
 /** How far the near plane slides against the far plane, in UV units. */
-const DISPLACEMENT = 0.035;
+const DISPLACEMENT = 0.055;
 
 /** Sampling inset, so the displacement never reaches past the image edge. */
 const INSET = 0.94;
+
+/** How long the flash takes to sweep from the far plane to the near one, in ms. */
+const FLASH_DURATION = 900;
 
 const vertexShader = /* glsl */ `
     varying vec2 vUv;
@@ -41,17 +44,17 @@ const fragmentShader = /* glsl */ `
     uniform bool uInvert;
     uniform vec2 uCover;
     uniform vec2 uPointer;
-    uniform float uFocus;
+    uniform float uFlash;
 
     float luma(vec3 color) {
         return dot(color, vec3(0.299, 0.587, 0.114));
     }
 
-    /* Without a depth map, a heavily blurred copy stands in for one: bright reads as near. */
+    /* Without a depth map, a blurred copy stands in for one: bright reads as near. */
     float depthAt(vec2 uv) {
         float depth = uHasDepth
             ? texture2D(uDepth, uv).r
-            : luma(texture2D(uTexture, uv, 6.0).rgb);
+            : luma(texture2D(uTexture, uv, 7.0).rgb);
 
         return uInvert ? 1.0 - depth : depth;
     }
@@ -61,18 +64,31 @@ const fragmentShader = /* glsl */ `
 
         float depth = depthAt(uv);
 
-        vec2 shifted = uv + uPointer * ${DISPLACEMENT.toFixed(3)} * (depth - 0.5);
+        /* Pixels tear where the depth steps, so the step itself holds the displacement back.
+           Flat areas get the full travel, edges get almost none. */
+        vec2 step = vec2(0.012, 0.012);
+        float dx = depthAt(uv + vec2(step.x, 0.0)) - depthAt(uv - vec2(step.x, 0.0));
+        float dy = depthAt(uv + vec2(0.0, step.y)) - depthAt(uv - vec2(0.0, step.y));
+        float edge = smoothstep(0.04, 0.22, length(vec2(dx, dy)));
 
-        /* Focus sits on whatever the pointer is over, so the rest falls away from it. */
-        vec2 pointerUv = (uPointer * 0.5) * uCover + 0.5;
-        float distance = abs(depth - depthAt(pointerUv));
+        vec2 shifted = uv + uPointer * ${DISPLACEMENT.toFixed(3)} * (depth - 0.5) * (1.0 - 0.9 * edge);
 
-        float blur = uFocus * smoothstep(0.06, 0.45, distance);
+        /* A plane of light sweeps from the far plane to the near one, lighting each depth in turn. */
+        float sweep = abs(depth - uFlash);
+        float band = 1.0 - smoothstep(0.0, 0.16, sweep);
+        float envelope = sin(3.14159 * uFlash);
+
+        /* Focus rides the same sweep: what the light has not reached yet is still soft. */
+        float blur = envelope * smoothstep(0.1, 0.5, sweep);
 
         vec3 sharp = texture2D(uTexture, shifted).rgb;
-        vec3 soft = texture2D(uTexture, shifted, 3.0).rgb;
+        vec3 soft = texture2D(uTexture, shifted, 5.0).rgb;
 
-        gl_FragColor = vec4(mix(sharp, soft, blur), 1.0);
+        vec3 color = mix(sharp, soft, blur);
+
+        color += band * envelope * 0.7 * (0.4 + 0.6 * sharp);
+
+        gl_FragColor = vec4(color, 1.0);
     }
 `;
 
@@ -83,9 +99,13 @@ export const mount = (el: HTMLElement) => {
     const image = el.querySelector<HTMLImageElement>("[data-depth-image-layer]");
     if (!image) return;
 
+    /* The canvas replaces the image in place, so whatever wrapper carries the scroll
+       parallax carries the canvas too. */
+    const host = image.parentElement ?? el;
+
     const canvas = document.createElement("canvas");
     canvas.className = "absolute inset-0 h-full w-full opacity-0 transition-opacity duration-500";
-    el.prepend(canvas);
+    host.prepend(canvas);
 
     let renderer: WebGLRenderer;
     try {
@@ -96,7 +116,7 @@ export const mount = (el: HTMLElement) => {
         return;
     }
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
     const scene = new Scene();
     const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -111,7 +131,7 @@ export const mount = (el: HTMLElement) => {
             uInvert: { value: el.dataset.depthInvert !== undefined },
             uCover: { value: new Vector2(1, 1) },
             uPointer: { value: new Vector2(0, 0) },
-            uFocus: { value: 0 },
+            uFlash: { value: 1 },
         },
     });
 
@@ -121,7 +141,7 @@ export const mount = (el: HTMLElement) => {
     let aspect = 1;
 
     const resize = () => {
-        const { width, height } = el.getBoundingClientRect();
+        const { width, height } = host.getBoundingClientRect();
         if (width === 0 || height === 0) return;
 
         renderer.setSize(width, height, false);
@@ -139,6 +159,12 @@ export const mount = (el: HTMLElement) => {
         aspect = texture.image.width / texture.image.height;
         material.uniforms.uTexture.value = texture;
         resize();
+
+        /* Compile and draw once up front. Left to the first visible frame, the program link
+           lands exactly as the element scrolls in and shows up as a stutter. */
+        renderer.compile(scene, camera);
+        renderer.render(scene, camera);
+
         canvas.classList.replace("opacity-0", "opacity-100");
         image.style.opacity = "0";
     });
@@ -151,24 +177,44 @@ export const mount = (el: HTMLElement) => {
         });
     }
 
-    let focusTarget = 0;
     let frame: number | null = null;
+    let wasInside = false;
+    let flashStart = -FLASH_DURATION;
     let visible = false;
 
     const tick = () => {
         const rect = el.getBoundingClientRect();
         const { smoothX, smoothY } = $smoothMouse.get();
 
+        const x = ((smoothX - rect.left) / rect.width - 0.5) * 2;
+        const y = ((smoothY - rect.top) / rect.height - 0.5) * 2;
+
+        /* Hover comes from the pointer the loop already tracks, so no overlay can swallow it. */
+        const inside = Math.abs(x) <= 1 && Math.abs(y) <= 1;
+
+        if (inside && !wasInside) flashStart = performance.now();
+        wasInside = inside;
+
+        const elapsed = (performance.now() - flashStart) / FLASH_DURATION;
+        material.uniforms.uFlash.value = clamp(0, 1, elapsed);
+
+        /* Off the image the pointer eases back to centre, so nothing distorts from
+           a cursor that is somewhere else on the page. */
+        const targetX = inside ? clamp(-1, 1, x) : 0;
+        const targetY = inside ? clamp(-1, 1, y) : 0;
+
         const pointer = material.uniforms.uPointer.value as Vector2;
-        pointer.set(
-            clamp(-1, 1, ((smoothX - rect.left) / rect.width - 0.5) * 2),
-            clamp(-1, 1, ((smoothY - rect.top) / rect.height - 0.5) * 2),
-        );
+        const nextX = pointer.x + (targetX - pointer.x) * 0.15;
+        const nextY = pointer.y + (targetY - pointer.y) * 0.15;
 
-        const focus = material.uniforms.uFocus.value as number;
-        material.uniforms.uFocus.value = focus + (focusTarget - focus) * 0.06;
+        const moved = Math.abs(nextX - pointer.x) > 0.0005 || Math.abs(nextY - pointer.y) > 0.0005;
 
-        renderer.render(scene, camera);
+        /* Nothing here reacts to scroll, so a still pointer and a finished flash need no frame. */
+        if (elapsed < 1 || moved) {
+            pointer.set(nextX, nextY);
+            renderer.render(scene, camera);
+        }
+
         frame = visible ? requestAnimationFrame(tick) : null;
     };
 
@@ -183,21 +229,9 @@ export const mount = (el: HTMLElement) => {
     observer.observe(el);
 
     const resizeObserver = new ResizeObserver(resize);
-    resizeObserver.observe(el);
-
-    const onEnter = () => {
-        focusTarget = 1;
-    };
-    const onLeave = () => {
-        focusTarget = 0;
-    };
-
-    el.addEventListener("pointerenter", onEnter);
-    el.addEventListener("pointerleave", onLeave);
+    resizeObserver.observe(host);
 
     return () => {
-        el.removeEventListener("pointerenter", onEnter);
-        el.removeEventListener("pointerleave", onLeave);
         observer.disconnect();
         resizeObserver.disconnect();
         if (frame !== null) cancelAnimationFrame(frame);
