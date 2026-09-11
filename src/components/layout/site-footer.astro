@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import { Container, Grid } from "@/components/core";
+import { Container, Grid, ProgressiveBlurText } from "@/components/core";
 
 import FooterImage from "@/assets/images/home-hero.jpg";
 
@@ -89,7 +89,7 @@ const year = new Date().getFullYear();
         </div>
         <Container class='w-full'>
             <div class='relative'>
-                <h2 class='text-display text-foreground-muted text-center uppercase'>Say hello</h2>
+                <ProgressiveBlurText as='h2' text='Say hello' to='bottom' class='relative text-display text-foreground-muted text-center uppercase' />
                 <p class='text-label absolute inset-x-0 top-1/2 -translate-y-1/2 text-center uppercase'>
                     © {year} Benjamin Wagner® <br /> Built in Upper Austria
                 </p>

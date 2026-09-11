@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import { Button, Container, Grid, Section } from "@/components/core";
+import { Button, Container, Grid, ProgressiveBlurText, Section } from "@/components/core";
 
 import RatesImage from "@/assets/images/rates.jpg";
 
@@ -59,7 +59,7 @@ const tiers: ITier[] = [
     <Image src={RatesImage} alt='' data-scroll data-scroll-speed='-0.15' class='absolute inset-0 z-0 h-full w-full object-cover' />
 
     <Container class='relative z-10'>
-        <h2 class='text-display text-foreground-muted text-center uppercase'>Rates</h2>
+        <ProgressiveBlurText as='h2' text='Rates' to='top' class='relative text-display text-foreground-muted text-center uppercase' />
         <p class='text-label absolute inset-x-0 top-1/2 -translate-y-1/2 text-center uppercase'>
             Two ways to work with me. <br /> Anything else, write to me.
         </p>

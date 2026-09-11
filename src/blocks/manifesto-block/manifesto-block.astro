@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import { Container, Grid, Section } from "@/components/core";
+import { Container, Grid, ProgressiveBlurText, Section } from "@/components/core";
 
 import ManifestoImage from "@/assets/images/manifesto.jpg";
 
@@ -21,7 +21,7 @@ const principles: IPrinciple[] = [
 <Section class='h-[150svh] max-lg:h-auto -mt-[100svh] py-0! overflow-clip' theme='dark' data-manifesto-block>
     <Image src={ManifestoImage} alt={"Manifesto image"} data-scroll data-scroll-speed='-0.15' class='absolute inset-0 object-cover h-full w-full' />
 
-    <div class='text-display absolute bottom-0 text-foreground-muted inset-x-0 font-semibold text-center'>MANIFESTO</div>
+    <ProgressiveBlurText text='MANIFESTO' to='bottom' class='text-display absolute bottom-0 text-foreground-muted inset-x-0 font-semibold text-center' />
 
     <Container class='relative z-20 py-grid-margin max-lg:py-24'>
         <Grid>

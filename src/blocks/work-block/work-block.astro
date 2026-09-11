@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import { Section } from "@/components/core";
+import { ProgressiveBlurText, Section } from "@/components/core";
 
 import AlterEgo from "@/assets/images/ae.jpg";
 import ClaudiaReiterer from "@/assets/images/claudiareiterer.jpg";
@@ -29,7 +29,7 @@ const projects: IProject[] = [
 <Section id='work' theme='light' class='h-[460svh] -mt-[100svh] py-0! z-0! overflow-clip' data-work-block>
     <div class='sticky top-0 h-svh flex items-center justify-center'>
         <div data-work-title class='relative w-full'>
-            <h2 class='text-foreground-muted text-center text-display uppercase'>Archive</h2>
+            <ProgressiveBlurText as='h2' text='Archive' to='top' class='relative text-foreground-muted text-center text-display uppercase' />
             <span class='text-label uppercase absolute inset-0 grid place-items-center'>2021 — 2026</span>
         </div>
     </div>
