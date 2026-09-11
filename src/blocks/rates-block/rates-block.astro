@@ -1,9 +1,6 @@
 ---
-import { Image } from "astro:assets";
 import Retainer from "@/assets/images/retainer.jpg";
 import { Button, Container, Grid, Section } from "@/components/core";
-
-import RetainerImage from "@/assets/images/retainer.jpg";
 
 interface IEntry {
     value: string;
@@ -21,8 +18,6 @@ interface ITier {
     rows: IRow[];
     action: string;
     href: string;
-    /** Renders the card on the dark theme, over the retainer photograph. */
-    dark?: boolean;
 }
 
 const tiers: ITier[] = [
@@ -54,55 +49,51 @@ const tiers: ITier[] = [
         ],
         action: "Book a month",
         href: "/contact?tier=retainer",
-        dark: true,
     },
 ];
 ---
 
-<Section theme='light' data-rates-block>
-    <Container>
+<Section class='py-[17vh]!' theme='light' data-rates-block>
+    <Container class='relative'>
+        <h2 class='text-display text-foreground-muted text-center uppercase'>Rates</h2>
+        <p class='text-label absolute inset-x-0 top-1/2 -translate-y-1/2 text-center uppercase'>
+            Two ways to work with me. <br /> Anything else, write to me.
+        </p>
+    </Container>
+
+    <Container class='pt-column-1'>
         <Grid>
-            <div class='col-span-6 sticky top-header-height self-start'>
-                <h2 class='text-[max(3rem,9vw)] text-foreground-muted font-semibold leading-[78%] tracking-[-3%] uppercase'>Rates</h2>
-                <p class='text-label uppercase pt-8'>Two ways to work with me.</p>
-                <p class='text-caption uppercase opacity-50 pt-2'>Anything that fits neither, write to me and we work it out.</p>
-            </div>
+            {
+                tiers.map((tier, index) => (
+                    <article class:list={["relative col-span-4 flex min-h-[70svh] flex-col overflow-clip bg-white/70", index === 0 && "col-start-3"]}>
+                        <header class='relative z-10 flex items-start justify-between p-grid-margin'>
+                            <div class='space-y-2'>
+                                <p class='text-label uppercase opacity-50'>{tier.kind}</p>
+                                <h3 class='text-[max(1rem,1.75vw)] font-semibold leading-[86%] tracking-[-3%] uppercase'>{tier.title}</h3>
+                            </div>
+                            <p class='text-[max(3rem,8.75vw)] leading-[72%] tracking-[-3%]'>0{index + 1}</p>
+                        </header>
 
-            <div class='col-span-4 col-start-8 flex flex-col gap-grid-gutter'>
-                {
-                    tiers.map((tier, index) => (
-                        <article class:list={["relative flex min-h-[70svh] flex-col overflow-clip", tier.dark ? "theme-dark" : "bg-white/70"]}>
-                            {tier.dark && <Image src={RetainerImage} alt='' class='absolute inset-0 z-0 h-full w-full object-cover' />}
-
-                            <header class='relative z-10 flex items-start justify-between p-grid-margin'>
-                                <div class='space-y-2'>
-                                    <p class='text-label uppercase opacity-50'>{tier.kind}</p>
-                                    <h3 class='text-[max(1rem,1.75vw)] font-semibold leading-[86%] tracking-[-3%] uppercase'>{tier.title}</h3>
+                        <dl class='relative z-10 mt-32 mb-16 px-grid-margin'>
+                            {tier.rows.map((row) => (
+                                <div class='grid grid-cols-12 gap-x-grid-gutter border-t border-foreground/15 pt-4 pb-8'>
+                                    <dt class='col-span-5 text-caption uppercase opacity-50'>{row.label}</dt>
+                                    <dd class='col-span-7 space-y-4 text-title'>
+                                        {row.entries.map((entry) => (
+                                            <div class='space-y-1'>
+                                                <p>{entry.value}</p>
+                                                {entry.note && <span class='block opacity-50'>{entry.note}</span>}
+                                            </div>
+                                        ))}
+                                    </dd>
                                 </div>
-                                <p class='text-[max(3rem,8.75vw)] leading-[72%] tracking-[-3%]'>0{index + 1}</p>
-                            </header>
+                            ))}
+                        </dl>
 
-                            <dl class='relative z-10 mt-32 mb-16 px-grid-margin'>
-                                {tier.rows.map((row) => (
-                                    <div class='grid grid-cols-12 gap-x-grid-gutter border-t border-foreground/15 pt-4 pb-8'>
-                                        <dt class='col-span-5 text-caption uppercase opacity-50'>{row.label}</dt>
-                                        <dd class='col-span-7 space-y-4 text-title'>
-                                            {row.entries.map((entry) => (
-                                                <div class='space-y-1'>
-                                                    <p>{entry.value}</p>
-                                                    {entry.note && <span class='block opacity-50'>{entry.note}</span>}
-                                                </div>
-                                            ))}
-                                        </dd>
-                                    </div>
-                                ))}
-                            </dl>
-
-                            <Button href={tier.href} label={tier.action} class='z-10 mt-auto m-grid-margin' />
-                        </article>
-                    ))
-                }
-            </div>
+                        <Button href={tier.href} label={tier.action} class='z-10 mt-auto m-grid-margin' />
+                    </article>
+                ))
+            }
         </Grid>
     </Container>
 </Section>
