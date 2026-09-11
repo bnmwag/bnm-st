@@ -39,24 +39,24 @@ const services: IService[] = [
 <Section id='services' theme='light' data-services-block>
     <Container>
         <Grid data-smooth-sticky-bounds>
-            <h2 class='col-span-4 text-title uppercase'>
+            <h2 class='col-span-4 max-lg:col-span-12 max-lg:mb-8 text-title uppercase'>
                 <span data-smooth-sticky data-smooth-sticky-top='50svh' class='block will-change-transform'>Services</span>
             </h2>
 
-            <ul class='col-span-7 col-start-6'>
+            <ul class='col-span-7 col-start-6 max-lg:col-span-12 max-lg:col-start-1'>
                 {
                     services.map((service, index) => (
-                        <li class='grid grid-cols-8 gap-x-grid-gutter border-t border-foreground/15 pt-4 pb-16'>
-                            <p class='col-span-2 text-label uppercase'>
+                        <li class='grid grid-cols-8 max-lg:grid-cols-1 gap-x-grid-gutter max-lg:gap-y-4 border-t border-foreground/15 pt-4 pb-16 max-lg:pb-10'>
+                            <p class='col-span-2 max-lg:col-span-1 text-label uppercase'>
                                 {`${service.title}`}
                                 {/* (0${index + 1})  */}
                             </p>
-                            <div class='col-span-3 col-start-3 space-y-1'>
+                            <div class='col-span-3 col-start-3 max-lg:col-span-1 max-lg:col-start-1 space-y-1'>
                                 {service.includes.map((item) => (
                                     <p class='text-label uppercase'>{item}</p>
                                 ))}
                             </div>
-                            <p class='col-span-3 col-start-6 text-label leading-none text-foreground opacity-50 text-balance'>{service.summary}</p>
+                            <p class='col-span-3 col-start-6 max-lg:col-span-1 max-lg:col-start-1 text-label leading-none text-foreground opacity-50 text-balance'>{service.summary}</p>
                         </li>
                     ))
                 }
