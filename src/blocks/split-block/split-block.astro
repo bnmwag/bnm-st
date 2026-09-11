@@ -20,7 +20,7 @@ const panels: IPanel[] = [
 
 <Section theme='light' data-split-block>
     <Container>
-        <Grid>
+        <Grid class='max-lg:gap-y-grid-gutter'>
             {
                 panels.map((panel) => (
                     <div class:list={["relative aspect-3/4 overflow-clip", panel.span]}>
