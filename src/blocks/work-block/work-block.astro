@@ -40,8 +40,8 @@ const projects: IProject[] = [
                 <article class:list={["absolute inset-x-0", project.placement]} style={`top: ${project.top}svh`} data-scroll data-scroll-speed={project.speed}>
                     <div class='relative w-full overflow-clip'>
                         <Image src={project.image} alt={project.title} class='h-auto w-full' />
-                        <div class='absolute inset-x-0 bottom-[6%] flex flex-col items-center gap-1 text-center text-white'>
-                            <p class='text-caption uppercase opacity-80'>{project.year}</p>
+                        <div class='absolute inset-x-0 bottom-[6%] flex flex-col items-center gap-2 text-center text-white'>
+                            <p class='text-label uppercase'>{project.year}</p>
                             <p class='text-title uppercase'>{project.title}</p>
                             <p class='text-caption uppercase opacity-80'>{project.discipline}</p>
                         </div>
