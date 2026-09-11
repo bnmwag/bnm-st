@@ -41,14 +41,3 @@
 @utility text-caption {
   @apply font-mono text-sm font-medium leading-[87%] tracking-[-0.04em];
 }
-
-/* Film grain over the hero, so the sigil sits in the same texture as the photography
-   behind it. The turbulence alpha is mapped to opaque mid grey, so the layer modulates
-   the backdrop instead of darkening it. */
-.hero-grain {
-  pointer-events: none;
-  mix-blend-mode: soft-light;
-  opacity: 0.5;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-}
