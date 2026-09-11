@@ -39,9 +39,14 @@ export const mount = (el: HTMLElement) => {
 
     let start = 0;
     let travel = 0;
+    let disabled = false;
 
     const measure = () => {
         el.style.transform = "";
+
+        /* Below lg the label sits above its list, where travelling down would cover it. */
+        disabled = window.innerWidth < 1024;
+        if (disabled) return;
 
         const rect = el.getBoundingClientRect();
         const boundsRect = bounds.getBoundingClientRect();
@@ -52,6 +57,11 @@ export const mount = (el: HTMLElement) => {
     };
 
     const render = ({ scroll }: { scroll: number }) => {
+        if (disabled) {
+            el.style.transform = "";
+            return;
+        }
+
         const raw = scroll - start;
 
         if (soften === 0) {
