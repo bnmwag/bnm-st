@@ -24,7 +24,7 @@ const panels: IPanel[] = [
             {
                 panels.map((panel) => (
                     <div class:list={["relative aspect-3/4 overflow-clip", panel.span]}>
-                        <Image src={panel.image} alt='' data-scroll data-scroll-speed='-0.1' class='absolute inset-x-0 -top-[10%] h-[120%] w-full object-cover' />
+                        <Image src={panel.image} alt='' widths={[480, 800, 1200, 1600, 1966]} sizes='(min-width: 1024px) 58vw, 100vw' quality={80} data-scroll data-scroll-speed='-0.1' class='absolute inset-x-0 -top-[10%] h-[120%] w-full object-cover' />
 
                         <div class='absolute inset-x-0 top-8 z-10 flex flex-col items-center gap-2 text-center text-white mix-blend-exclusion'>
                             <p class='text-label uppercase opacity-80'>{panel.kicker}</p>

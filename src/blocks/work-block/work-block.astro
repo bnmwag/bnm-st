@@ -39,7 +39,7 @@ const projects: IProject[] = [
             projects.map((project) => (
                 <article class:list={["absolute inset-x-0", project.placement]} style={`top: ${project.top}svh`} data-scroll data-scroll-speed={project.speed}>
                     <div class='relative w-full overflow-clip'>
-                        <Image src={project.image} alt={project.title} class='h-auto w-full' />
+                        <Image src={project.image} alt={`${project.title} website, ${project.year}`} widths={[480, 800, 1200, 1680]} sizes='(min-width: 1024px) 50vw, 100vw' quality={80} class='h-auto w-full' />
                         <div class='absolute inset-x-0 bottom-[6%] flex flex-col items-center gap-2 text-center text-white'>
                             <p class='text-label uppercase'>{project.year}</p>
                             <p class='text-title uppercase'>{project.title}</p>

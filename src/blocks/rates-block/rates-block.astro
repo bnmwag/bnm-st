@@ -56,7 +56,7 @@ const tiers: ITier[] = [
 ---
 
 <Section id='rates' class='h-[200svh] max-lg:h-auto max-lg:gap-y-16 flex flex-col justify-between overflow-clip' theme='dark' data-rates-block>
-    <Image src={RatesImage} alt='' data-scroll data-scroll-speed='-0.15' class='absolute inset-0 z-0 h-full w-full object-cover' />
+    <Image widths={[640, 1080, 1600, 2200, 2800, 3456]} sizes='100vw' quality={80} src={RatesImage} alt='' data-scroll data-scroll-speed='-0.15' class='absolute inset-0 z-0 h-full w-full object-cover' />
 
     <Container class='relative z-10'>
         <ProgressiveBlurText as='h2' text='Rates' to='top' class='relative text-display text-foreground-muted text-center uppercase' />
