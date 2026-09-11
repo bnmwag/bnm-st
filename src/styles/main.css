@@ -16,6 +16,8 @@ html {
 body {
     background: var(--background);
     color: var(--foreground);
+
+    font-feature-settings: 'case' on;
 }
 
 main > section {
@@ -33,3 +35,4 @@ main > section {
 img {
   user-select: none;
 }
+
