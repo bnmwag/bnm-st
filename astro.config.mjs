@@ -1,10 +1,16 @@
 // @ts-check
 import { defineConfig, fontProviders } from "astro/config";
 
+import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
+	site: "https://bnm.st",
+	adapter: vercel({
+		// Optimise images on demand instead of shipping every size from the build.
+		imageService: true,
+	}),
 	vite: {
 		plugins: [tailwindcss()],
 	},
