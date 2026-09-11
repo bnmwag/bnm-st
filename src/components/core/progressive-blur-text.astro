@@ -1,0 +1,58 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+    text: string;
+    /** Rendered element. Headings keep their semantics, the copies stay hidden. */
+    as?: "div" | "h1" | "h2" | "h3";
+    /** Edge that gets the heaviest blur. */
+    to?: "top" | "bottom";
+    /** Number of blur bands. More bands, smoother ramp, more layers to rasterize. */
+    steps?: number;
+    /** Blur radius at the sharp edge. Any CSS length. */
+    min?: string;
+    /** Blur radius at the blurry edge. Any CSS length. */
+    max?: string;
+    /** Where the ramp starts, as a percentage of the box measured from the sharp edge. */
+    start?: number;
+}
+
+const { text, as: Tag = "div", to = "top", steps = 8, min = "4px", max = "12px", start = 10, class: className, ...props } = Astro.props;
+
+/**
+ * Each band is a copy of the text with its own blur radius, masked to a triangle
+ * that overlaps its neighbours. Adjacent triangles sum to full opacity, so the
+ * text stays evenly visible while the blur steps up band by band.
+ */
+const position = (i: number): number => start + ((100 - start) * i) / (steps - 1);
+
+const layers = Array.from({ length: steps }, (_, i) => {
+    const stops =
+        i === 0
+            ? `black ${position(0)}%, transparent ${position(1)}%`
+            : i === steps - 1
+              ? `transparent ${position(i - 1)}%, black ${position(i)}%`
+              : `transparent ${position(i - 1)}%, black ${position(i)}%, transparent ${position(i + 1)}%`;
+    const t = ((i / (steps - 1)) ** 1.5).toFixed(3);
+    return {
+        mask: `linear-gradient(to ${to}, ${stops})`,
+        filter: `blur(calc(${min} + (${max} - ${min}) * ${t}))`,
+    };
+});
+---
+
+<Tag class={`[-webkit-text-fill-color:transparent] ${className ?? ""}`} {...props}>
+    {text}
+    {/* Copies overscan the box by 0.5em so the blur can spill past the glyphs instead of being cut by the mask. */}
+    {
+        layers.map(({ mask, filter }) => (
+            <span
+                aria-hidden='true'
+                class='pointer-events-none absolute -inset-[0.5em] p-[0.5em] [-webkit-text-fill-color:currentColor]'
+                style={`mask-image: ${mask}; filter: ${filter};`}
+            >
+                {text}
+            </span>
+        ))
+    }
+</Tag>
