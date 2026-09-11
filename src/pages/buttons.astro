@@ -1,0 +1,33 @@
+---
+import { Button, Container, Grid, Section } from "@/components/core";
+import { Base } from "@/components/layout";
+
+import HardChor from "@/assets/images/hard-chor.jpg";
+import Retainer from "@/assets/images/retainer.jpg";
+
+const samples = [
+    { label: "Start a project", image: HardChor },
+    { label: "Book a month", image: Retainer },
+    { label: "No image", image: undefined },
+];
+---
+
+<Base title='Buttons'>
+    <Section theme='light' class='min-h-svh'>
+        <Container>
+            <Grid class='gap-y-column-1 pt-header-height'>
+                {
+                    samples.map((sample) => (
+                        <div class='col-span-4 flex items-center justify-center'>
+                            <Button
+                                href='#'
+                                label={sample.label}
+                                image={sample.image}
+                            />
+                        </div>
+                    ))
+                }
+            </Grid>
+        </Container>
+    </Section>
+</Base>

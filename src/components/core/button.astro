@@ -1,0 +1,21 @@
+---
+import { Image } from "astro:assets";
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"a"> {
+    label: string;
+    /** Fills the button behind the label. */
+    image?: ImageMetadata;
+}
+
+const { label, image, class: className, ...props } = Astro.props;
+---
+
+<a class:list={["button-swap", className]} {...props}>
+    <span class='button-swap__bg'>
+        {image && <Image src={image} alt='' class='absolute inset-0 h-full w-full object-cover' />}
+    </span>
+    <span class='button-swap__inner px-8 py-6 text-label uppercase' data-text={label}>
+        <span class='button-swap__text'>{label}</span>
+    </span>
+</a>
