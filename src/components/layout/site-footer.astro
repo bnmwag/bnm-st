@@ -50,12 +50,12 @@ const year = new Date().getFullYear();
 
 <footer class='theme-light relative z-1 overflow-clip pt-[16vh]' data-site-footer>
     <!-- The image reaches over the word, so the band is at least as tall as the image plus its bottom inset. -->
-    <div class='relative flex min-h-[calc(var(--spacing-column-4)*4/3+var(--spacing-grid-margin))] items-end'>
-        <Container class='absolute inset-x-0 top-0'>
-            <Grid>
+    <div class='relative flex min-h-[calc(var(--spacing-column-4)*4/3+var(--spacing-grid-margin))] items-end max-lg:block max-lg:min-h-0'>
+        <Container class='absolute inset-x-0 top-0 max-lg:static'>
+            <Grid class='max-lg:gap-y-10'>
                 {
                     columns.map((column) => (
-                        <nav class:list={["col-span-2 flex flex-col items-start gap-2", column.start]}>
+                        <nav class:list={["col-span-2 max-lg:col-span-6 max-lg:col-start-auto flex flex-col items-start gap-2", column.start]}>
                             <p class='text-label mb-2 uppercase opacity-50'>{column.title}</p>
                             {column.links.map((link) => (
                                 <a href={link.href} class='text-swap text-title uppercase' data-text={link.label}>
@@ -68,17 +68,8 @@ const year = new Date().getFullYear();
             </Grid>
         </Container>
 
-        <Container class='w-full'>
-            <div class='relative'>
-                <h2 class='text-display text-foreground-muted text-center uppercase'>Say hello</h2>
-                <p class='text-label absolute inset-x-0 top-1/2 -translate-y-1/2 text-center uppercase'>
-                    © {year} Benjamin Wagner® <br /> Built in Upper Austria
-                </p>
-            </div>
-        </Container>
-
         <div
-            class='absolute bottom-grid-margin left-grid-margin z-10 aspect-3/4 w-column-4 overflow-clip'
+            class='absolute bottom-grid-margin left-grid-margin z-10 aspect-3/4 w-column-4 overflow-clip max-lg:static max-lg:mx-grid-margin max-lg:mt-12 max-lg:mb-10 max-lg:w-auto'
             data-depth-image
             data-depth-invert
         >
@@ -96,5 +87,14 @@ const year = new Date().getFullYear();
                 <p data-local-time class='text-caption self-end'>--:--:--</p>
             </div>
         </div>
+        <Container class='w-full'>
+            <div class='relative'>
+                <h2 class='text-display text-foreground-muted text-center uppercase'>Say hello</h2>
+                <p class='text-label absolute inset-x-0 top-1/2 -translate-y-1/2 text-center uppercase'>
+                    © {year} Benjamin Wagner® <br /> Built in Upper Austria
+                </p>
+            </div>
+        </Container>
+
     </div>
 </footer>
