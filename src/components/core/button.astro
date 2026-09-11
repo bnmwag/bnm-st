@@ -17,7 +17,7 @@ const { label, image, variant = "solid", class: className, ...props } = Astro.pr
     <span class='button-swap__bg'>
         {image && <Image src={image} alt='' class='absolute inset-0 h-full w-full object-cover' />}
     </span>
-    <span class='button-swap__inner px-8 py-6 text-label uppercase' data-text={label}>
-        <span class='button-swap__text'>{label}</span>
+    <span class='button-swap__inner text-swap px-8 py-6 text-label uppercase' data-text={label}>
+        <span class='text-swap__text'>{label}</span>
     </span>
 </a>

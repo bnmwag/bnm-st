@@ -41,15 +41,21 @@
 @utility text-caption {
   @apply font-mono text-sm font-medium leading-[87%] tracking-[-0.04em];
 }
-/* Button label swap. The label wipes away downward while a duplicate wipes in from
-   the top, so the button never shows doubled text and needs no extra markup. */
-.button-swap {
+/* Label swap. The text wipes away downward while a duplicate wipes in from the top,
+   so nothing is ever doubled and the markup holds one label. Usable on its own with
+   .text-swap, or inside a button, where the button's hover drives it. */
+.button-swap,
+.text-swap {
   --swap-smooth: cubic-bezier(0.32, 0.72, 0, 1);
   --swap-bounce: cubic-bezier(0.34, 2.27, 0.64, 1);
   --swap-settle: cubic-bezier(0.22, 1.12, 0.36, 1);
+  position: relative;
   display: inline-grid;
-  transition: transform 0.5s var(--swap-settle);
   -webkit-tap-highlight-color: transparent;
+}
+
+.button-swap {
+  transition: transform 0.5s var(--swap-settle);
 }
 
 .button-swap:active {
@@ -77,14 +83,12 @@
 }
 
 .button-swap__inner {
-  position: relative;
-  display: inline-grid;
   grid-area: 1 / 1;
   place-self: center;
   color: var(--background);
 }
 
-.button-swap__inner::after {
+.text-swap::after {
   content: attr(data-text);
   display: block;
   grid-area: 1 / 1;
@@ -93,21 +97,42 @@
   scale: 1.05;
   transform-origin: top center;
   transition:
-    clip-path 0.4s var(--swap-smooth),
-    scale 0.3s var(--swap-bounce),
-    translate 0.35s var(--swap-smooth);
+    clip-path 0.55s var(--swap-smooth),
+    scale 0.5s var(--swap-bounce),
+    translate 0.55s var(--swap-smooth);
 }
 
-.button-swap__text {
+.text-swap__text {
   grid-area: 1 / 1;
   clip-path: inset(0% 0% 0% 0%);
   translate: 0 0;
   scale: 1;
   transform-origin: bottom center;
   transition:
-    clip-path 0.4s var(--swap-smooth),
-    scale 0.3s var(--swap-bounce),
-    translate 0.35s var(--swap-smooth);
+    clip-path 0.55s var(--swap-smooth),
+    scale 0.5s var(--swap-bounce),
+    translate 0.55s var(--swap-smooth);
+  /* Mirrors the entry stagger: the copy that leaves goes first, this one follows. */
+  transition-delay: 0.09s;
+}
+
+/* Hit area covering the ink, so hover never depends on a copy that gets clipped away.
+   Absolute, so it cannot fight a padding utility on the same element. */
+.text-swap::before {
+  content: "";
+  position: absolute;
+  inset: -0.3em 0;
+}
+
+/* Negative leading puts descenders outside the line box, where the wipe would clip
+   them. Pad the clipped boxes and pull the layout back. */
+.text-swap::after,
+.text-swap__text {
+  padding-block: 0.3em;
+  margin-block: -0.3em;
+  /* Clipping a copy away also removes it from hit testing, so hover would drop and
+     restart whenever the pointer sat on one. Only the parent reacts. */
+  pointer-events: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -120,16 +145,30 @@
       transform 0.5s 0.08s var(--swap-settle);
   }
 
-  .button-swap:is(:hover, :focus-visible) .button-swap__inner::after {
+  /* Entry is quicker than exit, so both directions carry their own timing. */
+  .text-swap:is(:hover, :focus-visible)::after,
+  .button-swap:is(:hover, :focus-visible) .text-swap::after,
+  .text-swap:is(:hover, :focus-visible) .text-swap__text,
+  .button-swap:is(:hover, :focus-visible) .text-swap__text {
+    transition:
+      clip-path 0.4s var(--swap-smooth),
+      scale 0.3s var(--swap-bounce),
+      translate 0.35s var(--swap-smooth);
+  }
+
+  .text-swap:is(:hover, :focus-visible)::after,
+  .button-swap:is(:hover, :focus-visible) .text-swap::after {
     clip-path: inset(0% 0% 0% 0%);
     translate: 0 0;
     scale: 1;
     transition-delay: 0.075s;
   }
 
-  .button-swap:is(:hover, :focus-visible) .button-swap__text {
+  .text-swap:is(:hover, :focus-visible) .text-swap__text,
+  .button-swap:is(:hover, :focus-visible) .text-swap__text {
     clip-path: inset(100% 0% 0% 0%);
     translate: 0 0.25rem;
     scale: 0.95;
+    transition-delay: 0s;
   }
 }
