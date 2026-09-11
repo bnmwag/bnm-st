@@ -8,7 +8,8 @@ export const mount = (el: HTMLElement) => {
     let offset = 0;
 
     const measure = () => {
-        if (!heading) {
+        /* Below lg the headline is small enough that the nav would sit on top of it. */
+        if (!heading || window.innerWidth < 1024) {
             offset = 0;
             return;
         }
