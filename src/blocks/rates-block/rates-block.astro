@@ -73,7 +73,7 @@ const tiers: ITier[] = [
                         <>
                             {index > 0 && <p class='text-label uppercase py-6 text-center'>or / and</p>}
 
-                            <article class='theme-light relative flex min-h-[70svh] flex-col overflow-clip bg-white'>
+                            <article class='theme-light relative flex min-h-[70svh] max-lg:min-h-0 flex-col overflow-clip bg-white'>
                                 <header class='relative z-10 flex items-start justify-between p-grid-margin'>
                                     <div class='space-y-2'>
                                         <p class='text-label uppercase opacity-50'>{tier.kind}</p>
@@ -82,7 +82,7 @@ const tiers: ITier[] = [
                                     <p class='text-[max(3rem,8.75vw)] leading-[72%] tracking-[-3%]'>0{index + 1}</p>
                                 </header>
 
-                                <dl class='relative z-10 mt-32 mb-16 px-grid-margin'>
+                                <dl class='relative z-10 mt-32 mb-16 max-lg:mt-12 max-lg:mb-8 px-grid-margin'>
                                     {tier.rows.map((row) => (
                                         <div class='grid grid-cols-12 gap-x-grid-gutter border-t border-foreground/15 pt-4 pb-8'>
                                             <dt class='col-span-5 text-caption uppercase opacity-50'>{row.label}</dt>
