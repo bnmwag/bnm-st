@@ -28,9 +28,6 @@ const LEAVE: Flap[] = [
     { delay: 0.045, gain: 0.12, decay: 0.03, frequency: 2600 },
 ];
 
-/** How long the pointer has to stay before it counts as a hover. */
-const DWELL = 90;
-
 /** Grace after leaving, so moving straight to the next link reads as one move. */
 const GRACE = 110;
 
@@ -82,7 +79,6 @@ defineService({
         let current: Element | null = null;
         let sounded = false;
         let lastSoundAt = 0;
-        let enterTimer: number | undefined;
         let leaveTimer: number | undefined;
 
         /* Browsers only allow audio once the visitor has interacted with the page. */
@@ -111,14 +107,9 @@ defineService({
 
             /* Landing on the next link cancels the last one's exit: one move, one sound. */
             window.clearTimeout(leaveTimer);
-            window.clearTimeout(enterTimer);
 
             current = target;
-            sounded = false;
-
-            enterTimer = window.setTimeout(() => {
-                sounded = sound(ENTER);
-            }, DWELL);
+            sounded = sound(ENTER);
         };
 
         const onOut = (event: PointerEvent) => {
@@ -129,11 +120,10 @@ defineService({
             const next = event.relatedTarget as Node | null;
             if (next && target.contains(next)) return;
 
-            window.clearTimeout(enterTimer);
             current = null;
 
-            /* Only answer an entrance that was actually heard. */
-            if (!sounded) return;
+            /* Only answer an entrance that was actually heard, and only for inline links. */
+            if (!sounded || target.classList.contains("button-swap")) return;
 
             sounded = false;
             leaveTimer = window.setTimeout(() => sound(LEAVE), GRACE);
@@ -145,7 +135,6 @@ defineService({
         window.addEventListener("pointerout", onOut);
 
         return () => {
-            window.clearTimeout(enterTimer);
             window.clearTimeout(leaveTimer);
             window.removeEventListener("pointerdown", prepare);
             window.removeEventListener("keydown", prepare);
