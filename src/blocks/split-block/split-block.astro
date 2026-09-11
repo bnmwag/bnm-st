@@ -4,17 +4,35 @@ import { Container, Grid, Section } from "@/components/core";
 
 import Left from "@/assets/images/left.jpg";
 import Right from "@/assets/images/right.jpg";
+
+interface IPanel {
+    image: ImageMetadata;
+    kicker: string;
+    title: string;
+    span: string;
+}
+
+const panels: IPanel[] = [
+    { image: Right, kicker: "Drafts", title: "COURTS", span: "col-span-5" },
+    { image: Left, kicker: "Drafts", title: "Vextra", span: "col-span-7" },
+];
 ---
 
 <Section theme='light' data-split-block>
     <Container>
         <Grid>
-            <div class='col-span-5 aspect-3/4 overflow-clip'>
-                <Image src={Right} alt={"Right image"} class='object-cover h-full w-full' data-scroll data-scroll-speed='-0.1' />
-            </div>
-            <div class='col-span-7 aspect-3/4 overflow-clip'>
-                <Image src={Left} alt={"Left image"} class='object-cover h-full w-full' data-scroll data-scroll-speed='-0.1' />
-            </div>
+            {
+                panels.map((panel) => (
+                    <div class:list={["relative aspect-3/4 overflow-clip", panel.span]}>
+                        <Image src={panel.image} alt='' data-scroll data-scroll-speed='-0.1' class='absolute inset-x-0 -top-[10%] h-[120%] w-full object-cover' />
+
+                        <div class='absolute inset-x-0 top-8 z-10 flex flex-col items-center gap-2 text-center text-white mix-blend-exclusion'>
+                            <p class='text-label uppercase opacity-80'>{panel.kicker}</p>
+                            <p class='text-title uppercase'>{panel.title}</p>
+                        </div>
+                    </div>
+                ))
+            }
         </Grid>
     </Container>
 </Section>
