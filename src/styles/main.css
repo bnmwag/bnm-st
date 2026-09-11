@@ -37,3 +37,36 @@ img {
   user-select: none;
 }
 
+/* Keyboard users get a visible ring; mouse users never see it. */
+:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+}
+
+.skip-link {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    background: var(--foreground);
+    color: var(--background);
+    transform: translateY(-100%);
+}
+
+.skip-link:focus-visible {
+    transform: none;
+    outline-offset: -3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+    }
+}
+

@@ -34,7 +34,7 @@
 
 /* Meta rows: name, services, location, time. */
 @utility text-label {
-  @apply text-[max(0.6875rem,0.75vw)] font-semibold leading-[86%] tracking-[-3%];
+  @apply text-[max(0.75rem,0.75vw)] font-semibold leading-[86%] tracking-[-3%];
 }
 
 /* Mono meta: years, disciplines. */
